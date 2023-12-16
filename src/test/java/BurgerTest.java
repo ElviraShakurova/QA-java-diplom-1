@@ -1,44 +1,36 @@
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import praktikum.Bun;
 import praktikum.Burger;
 import praktikum.Ingredient;
 import praktikum.IngredientType;
-
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-@RunWith(Parameterized.class)
 public class BurgerTest {
+
     @Mock
     private Bun bun;
-
 
     @Mock
     private Ingredient ingredient1, ingredient2, ingredient3;
 
     private Burger burger;
-
     private List<Ingredient> ingredients;
 
-    public BurgerTest(Bun bun, List<Ingredient> ingredients) {
-        this.bun = bun;
-        this.ingredients = ingredients;
-    }
-
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         burger = new Burger();
+        ingredients = new ArrayList<>();
+        ingredients.add(ingredient1);
+        ingredients.add(ingredient2);
+        ingredients.add(ingredient3);
         when(bun.getName()).thenReturn("test bun");
         when(bun.getPrice()).thenReturn(100f);
         when(ingredient1.getType()).thenReturn(IngredientType.SAUCE);
@@ -52,69 +44,49 @@ public class BurgerTest {
         when(ingredient3.getPrice()).thenReturn(75f);
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data(){
-        return Arrays.asList(new Object[][]{
-                {new Bun("black bun", 100), Arrays.asList(
-                        new Ingredient(IngredientType.SAUCE,"hot sauce", 100),
-                        new Ingredient(IngredientType.SAUCE, "sour cream", 200),
-                        new Ingredient(IngredientType.FILLING,"cutlet", 100 )
-                )},
-                {new Bun("white bun", 200), Arrays.asList(
-                        new Ingredient(IngredientType.SAUCE,  "chili sauce", 300),
-                        new Ingredient(IngredientType.FILLING, "dinosaur", 200),
-                        new Ingredient(IngredientType.FILLING, "sausage", 300)
-                )},
-                {new Bun("red bun", 300), Arrays.asList(
-                        new Ingredient(IngredientType.SAUCE, "sour cream", 200),
-                        new Ingredient(IngredientType.FILLING, "cutlet", 100),
-                        new Ingredient(IngredientType.FILLING, "sausage", 300)
-                )},
-        });
-    }
-
     @Test
-    public void testSetBuns(){
+    public void testSetBuns() {
         burger.setBuns(bun);
         assertEquals(bun, burger.bun);
     }
 
     @Test
-    public void testAddIngredient(){
+    public void testAddIngredient() {
         Ingredient ingredient = ingredients.get(0);
         burger.addIngredient(ingredient);
-        assertEquals(1, burger.ingredients.size());
+        int expectedSize = 1;
+        assertEquals(expectedSize, burger.ingredients.size());
         assertTrue(burger.ingredients.contains(ingredient));
     }
 
     @Test
-    public void testRemoveIngredient(){
-        for (Ingredient ingredient : ingredients){
+    public void testRemoveIngredient() {
+        for (Ingredient ingredient : ingredients) {
             burger.addIngredient(ingredient);
         }
-        int indexRemove = ingredients.size() - 1;
-        Ingredient ingredientRemove = ingredients.get(indexRemove);
-        burger.removeIngredient(indexRemove);
+        int indexToRemove = ingredients.size() - 1;
+        Ingredient ingredientToRemove = ingredients.get(indexToRemove);
+        burger.removeIngredient(indexToRemove);
         assertEquals(ingredients.size() - 1, burger.ingredients.size());
-        assertFalse(burger.ingredients.contains(ingredientRemove));
+        assertFalse(burger.ingredients.contains(ingredientToRemove));
     }
 
     @Test
-    public void testMoveIngredient(){
-        for (Ingredient ingredient : ingredients){
+    public void testMoveIngredient() {
+        for (Ingredient ingredient : ingredients) {
             burger.addIngredient(ingredient);
         }
-        int indexMove = 0;
+        int indexToMove = 0;
         int newIndex = 1;
-        Ingredient ingredientMove = ingredients.get(indexMove);
-        burger.moveIngredient(indexMove, newIndex);
-        assertEquals(ingredientMove, burger.ingredients.get(newIndex));
+        Ingredient ingredientToMove = ingredients.get(indexToMove);
+        burger.moveIngredient(indexToMove, newIndex);
+        assertEquals(ingredientToMove, burger.ingredients.get(newIndex));
     }
 
     @Test
-    public void testGetPrice(){
+    public void testGetPrice() {
         burger.setBuns(bun);
-        for (Ingredient ingredient : ingredients){
+        for (Ingredient ingredient : ingredients) {
             burger.addIngredient(ingredient);
         }
         float expectedPrice = bun.getPrice() * 2;
@@ -127,9 +99,9 @@ public class BurgerTest {
     }
 
     @Test
-    public void testGetReceipt(){
+    public void testGetReceipt() {
         burger.setBuns(bun);
-        for (Ingredient ingredient : ingredients){
+        for (Ingredient ingredient : ingredients) {
             burger.addIngredient(ingredient);
         }
         StringBuilder expectedReceipt = new StringBuilder(String.format("(==== %s ====)%n", bun.getName()));

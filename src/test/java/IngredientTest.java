@@ -38,8 +38,6 @@ public class IngredientTest {
     public void testGetTypeFilling(){
         Ingredient mockFilling = mock(Ingredient.class);
         Mockito.when(mockFilling.getType()).thenReturn(IngredientType.FILLING);
-        IngredientType expectedType = IngredientType.FILLING;
-        Ingredient actualIngredient = mockFilling;
-        assertEquals(expectedType, actualIngredient.getType());
+        assertEquals(IngredientType.FILLING, mockFilling.getType());
     }
 }
